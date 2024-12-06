@@ -77,7 +77,6 @@ router.post('/signin', async (req, res) => {
             message: "Error while signin, please try again."
         });
     }
-
 });
 
 export default router;
