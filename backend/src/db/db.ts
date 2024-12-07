@@ -25,13 +25,15 @@ export const initializeDatabase = async () => {
             userid INT NOT NULL,
             name VARCHAR(50) NOT NULL,
             username VARCHAR(100) NOT NULL,
+            share BOOLEAN,
+            uniqueid UUID UNIQUE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             CONSTRAINT userid FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE
         )`
         
         await pgClient.query(createUser);
         await pgClient.query(userLink);
-        console.log("Users table initialized successfully.");
+        console.log("All tables initialized successfully.");
     } catch(error) {
         console.error("Error initializing database schema:", error);
         process.exit(1);
