@@ -12,18 +12,17 @@ export const initializeDatabase = async () => {
         await pgClient.connect();
         console.log("Connected to PostgreSQL");
 
-        // schema
         const createUser = `CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
-            username VARCHAR(50) UNIQUE NOT NULL,
-            password VARCHAR(50) NOT NULL,
-            email VARCHAR(255) UNIQUE NOT NULL,
+            username VARCHAR(100) UNIQUE NOT NULL,
+            password VARCHAR(100) NOT NULL,
+            email VARCHAR(100) UNIQUE NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`
 
         const userLink = `CREATE TABLE IF NOT EXISTS socialtable (
             userid INT NOT NULL,
-            name VARCHAR(50) NOT NULL,
+            name VARCHAR(100) NOT NULL,
             username VARCHAR(100) NOT NULL,
             share BOOLEAN,
             uniqueid UUID UNIQUE,
