@@ -1,12 +1,10 @@
+import LandingPage from "./pages/LandingPage"
 
-function App() {
-
+const App = () => {
   return (
-    <>
     <div>
-      <h1 className="text-5xl ">Hi there</h1>
+      <LandingPage />
     </div>
-    </>
   )
 }
 
