@@ -1,5 +1,5 @@
 import Cards from "./Cards";
-import { Button } from "./ui/button";
+import DrawerCreateLink from "./DrawerCreateLink";
 import { Input } from "./ui/input";
 
 const DashboardHero = () => {
@@ -12,7 +12,7 @@ const DashboardHero = () => {
 
         <div className="flex space-x-2 md:space-x-4 md:p-2">
           <Input placeholder="Search" />
-          <Button>Create link</Button>
+          <DrawerCreateLink />
         </div>
 
       </div>
