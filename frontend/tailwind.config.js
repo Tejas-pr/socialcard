@@ -56,7 +56,7 @@ export default {
 			slate: {
 				'light': '#F5F4F4',
 			}
-  		}
+  		},
   	}
   },
   plugins: [require("tailwindcss-animate")],
