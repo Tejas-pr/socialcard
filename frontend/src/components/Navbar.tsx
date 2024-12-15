@@ -1,5 +1,5 @@
 import { Link2Icon, PanelRightOpen, Settings2, ShieldPlus } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 
 const Navbar = ({
@@ -9,6 +9,14 @@ const Navbar = ({
   isNavOpen: boolean;
   toggleNav: () => void;
 }) => {
+  const location = useLocation();
+  const clearToken = () => {
+    if(!localStorage.getItem("token")){
+      return;
+    }
+    localStorage.removeItem("token");
+    window.location.reload();
+  }
   return (
     <div
       className={`
@@ -35,16 +43,16 @@ const Navbar = ({
               <li>
                 <Link
                   to="/dashboard"
-                  className="flex items-center p-3 bg-gray-100 hover:bg-gray-300 rounded-lg text-gray-700 transition-colors"
+                  className={`flex items-center p-3 bg-gray-100 hover:bg-gray-300 rounded-lg text-gray-700 transition-colors ${location.pathname === '/dashboard' ? 'bg-[#E0ECFC] text-[#2E69EC]' : ''}`}
                 >
                   <Link2Icon className="w-5 h-5 mr-3 text-gray-600" />
                   <span className="text-sm font-medium">Links</span>
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/settings"
-                  className="flex items-center p-3 bg-gray-100 hover:bg-gray-300 rounded-lg text-gray-700 transition-colors"
+                <Link 
+                  to="#settings"
+                  className={`flex items-center p-3 bg-gray-100 hover:bg-gray-300 rounded-lg text-gray-700 transition-colors ${location.pathname === '/settings' ? 'bg-[#E0ECFC] text-[#2E69EC]' : ''}`}
                 >
                   <Settings2 className="w-5 h-5 mr-3 text-gray-600" />
                   <span className="text-sm font-medium">Settings</span>
@@ -56,10 +64,12 @@ const Navbar = ({
 
         <div className="p-4">
           <div className="space-y-3">
-            <Button className="w-full text-white rounded-lg shadow-md">
-              Upgrade <ShieldPlus className="ml-1" />
-            </Button>
-            <Button className="w-full text-white rounded-lg shadow-md">
+            <Link to="/upgrade">
+              <Button className="w-full text-white rounded-lg shadow-md">
+                  Upgrade <ShieldPlus className="ml-1" />
+              </Button>
+            </Link>
+            <Button onClick={clearToken} className="w-full text-white rounded-lg shadow-md">
               Sign Out
             </Button>
           </div>
