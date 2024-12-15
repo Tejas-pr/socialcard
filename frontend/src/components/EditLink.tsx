@@ -13,7 +13,7 @@ const EditLink = () => {
   return (
     <div>
       <Dialog>
-        <DialogTrigger>
+        <DialogTrigger asChild>
           <Button variant={"ghost"}>
               <Edit />
           </Button>

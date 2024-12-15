@@ -1,6 +1,6 @@
 import EditLink from "./EditLink";
 import { Button } from "./ui/button";
-import socialw from "../../public/social3B.svg";
+import socialw from "../assets/social3B.svg";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +21,7 @@ const Cards = () => {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col justify-start space-x-5 space-y-5 w-full flex-wrap md:w-[50%] border hover:shadow-lg rounded-xl p-4 transition-all duration-200">
+      <div className="flex flex-col justify-start space-x-5 space-y-5 w-full flex-wrap md:w-[45%] border hover:shadow-lg hover:cursor-pointer rounded-xl p-4 transition-all duration-200">
         <div className="flex items-center justify-start space-x-3">
           <div className="flex items-center justify-center rounded-full border p-2">
             <div className="bg-slate-200 p-1 rounded-full">
@@ -29,13 +29,13 @@ const Cards = () => {
             </div>
           </div>
           <div>
-            <h1>Social card</h1>
+            <h1 className="text-lg font-normal">Social card</h1>
           </div>
         </div>
-
+          <hr className="w-[90%] h-px dark:bg-gray-400 border bg-gray-500" />
         <div className="flex items-center justify-between w-full pr-5">
           <div className="">
-            <div className="flex items-center space-x-2 md:space-x-4">
+            <div className="flex items-center space-x-4">
               <p><a href={link} target="_blank" className="flex gap-x-1 items-center justify-center hover:underline hover:cursor-pointer">link<ExternalLink className="w-4"/> </a></p>
               {!copy ? (
                 <Copy
@@ -46,7 +46,7 @@ const Cards = () => {
                 <CircleCheckBig className="w-4 text-blue-600" />
               )}
             </div>
-            <p className="text-sm font-light">date</p>
+            <p className="text-sm font-extralight mt-1">date</p>
           </div>
 
           <div className="flex space-x-2">

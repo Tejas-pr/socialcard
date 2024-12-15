@@ -1,14 +1,18 @@
 import DashboardHero from "@/components/DashboardHero";
 import Navbar from "@/components/Navbar";
+import { useState } from "react";
 
 const Dashboard = () => {
+  const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
+
+  const toggleNav = () => setIsNavOpen(!isNavOpen);
   return (
-    <div className="flex h-screen bg-slate-light">
-      <div className=" bg-slate-light w-[16%] h-screen p-4">
-        <Navbar />
+    <div className="flex bg-slate-light">
+      <div className="md:w-[20%] lg:w-[16%]">
+        <Navbar isNavOpen={isNavOpen} toggleNav={toggleNav} />
       </div>
-      <div className="bg-white w-full rounded-tl-2xl mt-2 md:pl-12 pt-8">
-        <DashboardHero />
+      <div className="bg-white w-full rounded-tl-2xl md:mt-2 md:pl-12 pt-8">
+        <DashboardHero toggleNav={toggleNav} />
       </div>
     </div>
   );

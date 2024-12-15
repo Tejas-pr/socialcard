@@ -14,19 +14,19 @@ const NavNavigation = () => {
         <NavigationMenuList>
           <NavigationMenuItem >
             <div className="flex flex-col md:flex-row justify-center items-center md:gap-2">
-                <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     <Link to="/product">Product</Link>
                 </NavigationMenuLink>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     <Link to="/resources">Resources</Link>
                 </NavigationMenuLink>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     <Link to="/pricing">Pricing</Link>
                 </NavigationMenuLink>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     <Link to="/customers">Customers</Link>
                 </NavigationMenuLink>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     <Link to="/documentation">Documentation</Link>
                 </NavigationMenuLink>
             </div>

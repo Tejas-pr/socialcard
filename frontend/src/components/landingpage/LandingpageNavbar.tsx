@@ -43,19 +43,19 @@ const LandingpageNavbar = () => {
       {isNavOpen && (
         <div className="absolute top-full left-0 right-0 bg-white shadow-md rounded-lg z-10">
           <div className="p-4 space-y-2">
-            <Button variant="link" asChild>
+            <Button variant="link">
               <Link to="/product">Product</Link>
             </Button>
-            <Button variant="link" asChild>
+            <Button variant="link">
               <Link to="/resources">Resources</Link>
             </Button>
-            <Button variant="link" asChild>
+            <Button variant="link">
               <Link to="/pricing">Pricing</Link>
             </Button>
-            <Button variant="link" asChild>
+            <Button variant="link">
               <Link to="/customers">Customers</Link>
             </Button>
-            <Button variant="link" asChild>
+            <Button variant="link">
               <Link to="/documentation">Documentation</Link>
             </Button>
 

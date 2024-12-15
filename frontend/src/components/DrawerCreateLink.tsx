@@ -22,7 +22,7 @@ const DrawerCreateLink = () => {
   return (
     <div>
       <Drawer>
-        <DrawerTrigger>
+        <DrawerTrigger asChild>
           <Button>Create Link</Button>
         </DrawerTrigger>
         <DrawerContent className="h-[80%]">
@@ -33,15 +33,14 @@ const DrawerCreateLink = () => {
               </div>
             </DrawerTitle>
             <DrawerDescription>
-              <div className="flex space-x-2 items-center justify-center">
+              <span className="flex space-x-2 items-center justify-center">
                 <span>create your new link here</span> <ArrowDown />
-              </div>
+              </span>
             </DrawerDescription>
           </DrawerHeader>
           <div className="flex flex-col space-x-2 items-center justify-center space-y-5">
             <div className="w-[70%] md:w-[40%]">
               <hr className="w-full h-px my-4 dark:bg-gray-400 border-0 bg-gray-500" />
-
               <div className="flex items-center">
                 <span className="text-sm font-medium text-gray-900 dark:text-white">
                   Social Name
@@ -105,7 +104,7 @@ const DrawerCreateLink = () => {
                 </Button>
               </div>
             </div>
-            <DrawerClose>
+            <DrawerClose asChild>
               <div className="flex space-x-2 items-center justify-center">
                 <Button variant={"outline"} className="w-96">
                   Close
