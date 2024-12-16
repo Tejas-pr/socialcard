@@ -15,7 +15,7 @@ const EditLink = () => {
       <Dialog>
         <DialogTrigger asChild>
           <Button variant={"ghost"}>
-              <Edit />
+            <Edit />
           </Button>
         </DialogTrigger>
         <DialogContent>

@@ -9,7 +9,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CircleCheckBig, Copy, EllipsisVertical, ExternalLink } from "lucide-react";
+import {
+  CircleCheckBig,
+  Copy,
+  EllipsisVertical,
+  ExternalLink,
+} from "lucide-react";
 import { useState } from "react";
 
 const Cards = () => {
@@ -32,11 +37,20 @@ const Cards = () => {
             <h1 className="text-lg font-normal">Social card</h1>
           </div>
         </div>
-          <hr className="w-[90%] h-px dark:bg-gray-400 border bg-gray-500" />
+        <hr className="w-[90%] h-px dark:bg-gray-400 border bg-gray-500" />
         <div className="flex items-center justify-between w-full pr-5">
           <div className="">
             <div className="flex items-center space-x-4">
-              <p><a href={link} target="_blank" className="flex gap-x-1 items-center justify-center hover:underline hover:cursor-pointer">link<ExternalLink className="w-4"/> </a></p>
+              <p>
+                <a
+                  href={link}
+                  target="_blank"
+                  className="flex gap-x-1 items-center justify-center hover:underline hover:cursor-pointer"
+                >
+                  link
+                  <ExternalLink className="w-4" />{" "}
+                </a>
+              </p>
               {!copy ? (
                 <Copy
                   className="w-4 hover:cursor-pointer"

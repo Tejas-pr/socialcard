@@ -45,10 +45,17 @@ const BubbleText = () => {
   }, []);
 
   return (
-    <h2 className="hover-text text-center text-4xl md:text-5xl font-thin text-indigo-300 hover:cursor-pointer"
-    onClick={() => window.open(import.meta.env.VITE_REACT_APP_URL, "_blank", "noopener,noreferrer")}
+    <h2
+      className="hover-text text-center text-4xl md:text-5xl font-thin text-indigo-300 hover:cursor-pointer"
+      onClick={() =>
+        window.open(
+          import.meta.env.VITE_REACT_APP_URL,
+          "_blank",
+          "noopener,noreferrer"
+        )
+      }
     >
-      <Text >Socailcard.co</Text>
+      <Text>Socailcard.co</Text>
     </h2>
   );
 };

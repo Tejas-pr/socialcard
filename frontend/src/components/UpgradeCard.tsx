@@ -1,9 +1,6 @@
 import { motion } from "framer-motion";
 
-const UpgradeCard = ({ price, size } : {
-    price: number;
-    size: string;
-}) => {
+const UpgradeCard = ({ price, size }: { price: number; size: string }) => {
   return (
     <motion.div
       whileHover="hover"
@@ -33,15 +30,15 @@ const UpgradeCard = ({ price, size } : {
             duration: 1,
             ease: "backInOut",
           }}
-          className={`my-2 block origin-top-left font-mono ${price < 500 ? "text-4xl" : "text-4xl md:text-6xl"} font-black leading-[1.2]`}
+          className={`my-2 block origin-top-left font-mono ${
+            price < 500 ? "text-4xl" : "text-4xl md:text-6xl"
+          } font-black leading-[1.2]`}
         >
           ${price}/
           <br />
           Month
         </motion.span>
-        <p>
-          Upgrade to plan to get access to all the features.
-        </p>
+        <p>Upgrade to plan to get access to all the features.</p>
       </div>
       <button className="absolute bottom-4 left-4 right-4 z-20 rounded border-2 border-white bg-white py-2 text-center font-mono font-black uppercase text-neutral-800 backdrop-blur transition-colors hover:bg-white/30 hover:text-white">
         Get it now

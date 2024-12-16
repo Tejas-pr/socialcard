@@ -1,10 +1,10 @@
-import { Route, Routes } from "react-router-dom"
-import LandingPage from "./pages/LandingPage"
-import Signin from "./pages/Signin"
-import Signup from "./pages/Signup"
-import Dashboard from "./pages/Dashboard"
-import ShowCard from "./pages/ShowCard"
-import Upgrade from "./pages/Upgrade"
+import { Route, Routes } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import Signin from "./pages/Signin";
+import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+import ShowCard from "./pages/ShowCard";
+import Upgrade from "./pages/Upgrade";
 
 const App = () => {
   return (
@@ -20,7 +20,7 @@ const App = () => {
         </Routes>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

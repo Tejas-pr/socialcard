@@ -1,10 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { motion } from "motion/react";
 const Signup = () => {
   return (
     <div className="bg-gradient-to-r from-[#FDF4E8] via-[#FBE8FB] to-[#FED2D8] h-screen">
-      <div className="flex items-center justify-center h-screen">
+      <motion.div
+        initial={{ opacity: 0, x: -200 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{
+          duration: 0.9,
+          delay: 0.7,
+          ease: [0, 0.71, 0.2, 1.01],
+        }}
+        className="flex items-center justify-center h-screen"
+      >
         <div className="flex flex-col justify-center items-center bg-white border border-3 border-black w-full sm:w-[80%] md:w-[50%] lg:w-[30%] p-6 sm:p-9 rounded-lg">
           <h1 className="text-xl sm:text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             Get started with Socialcard
@@ -54,7 +63,7 @@ const Signup = () => {
             </form>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
