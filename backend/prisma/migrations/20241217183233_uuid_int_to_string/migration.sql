@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "userLink" ALTER COLUMN "UUID" SET DATA TYPE TEXT;

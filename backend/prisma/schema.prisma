@@ -32,7 +32,7 @@ model userLink {
   twitter   String
   email     String
   phone     Int
-  UUID      Int       @unique
+  UUID      String       @unique
 
   user      CreateUser @relation(fields: [userid], references: [id])
 }

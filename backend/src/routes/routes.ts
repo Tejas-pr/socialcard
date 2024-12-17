@@ -1,11 +1,13 @@
 import express, { Request, Response } from 'express';
-import pgClient from "../db/db";
 const router = express.Router();
 import jwt from "jsonwebtoken";
 import { isValidMiddleware } from "../middleware/authMiddleware";
 import uuid4 from "uuid4";
 import { z } from "zod" ;
 import bcrypt from "bcrypt";
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient();
 
 const User = z.object({
     username: z.string().min(3).max(100),
@@ -33,11 +35,14 @@ router.post('/signup', async (req: Request, res: Response) => {
             });
             return;
         }
+        
+        const checkUser = await prisma.createUser.findUnique({
+            where: {
+                email: email
+            }
+        })
 
-        const checkUserQuery = `SELECT * FROM users WHERE email = $1`;
-        const checkUser = await pgClient.query(checkUserQuery, [email]);
-
-        if (checkUser?.rowCount && checkUser.rowCount > 0 ) {
+        if (checkUser) {
             res.status(409).json({
                 message: "User already exists!"
             });
@@ -47,8 +52,13 @@ router.post('/signup', async (req: Request, res: Response) => {
         const SALT_ROUND = parseInt(process.env.BCRYPT_SALT_ROUNDS || "10", 10);
         const hasedPassword = await bcrypt.hash(password, SALT_ROUND);
 
-        const createUserQuery = `INSERT INTO users (username, password, email) VALUES ($1, $2, $3)`;
-        await pgClient.query(createUserQuery, [username, hasedPassword, email]);
+        await prisma.createUser.create({
+            data: {
+                username: username,
+                email: email,
+                password: hasedPassword
+            }
+        })
 
         res.status(201).json({
             message: "User registered successfully."
@@ -71,16 +81,19 @@ router.post('/signin', async (req: Request, res: Response) => {
             });
         }
 
-        const finderUserQuery = `SELECT * FROM users WHERE email = $1`;
-        const findUser = await pgClient.query(finderUserQuery, [email]);
+        const findUser = await prisma.createUser.findUnique({
+            where: {
+                email: email
+            }
+        })
 
-        if (findUser.rowCount === 0) {
+        if (!findUser) {
             return res.status(404).json({
                 message: "User does not exist. Please sign up!"
             });
         }
 
-        const storedHashedPassword = findUser.rows[0].password;
+        const storedHashedPassword = findUser.password;
 
         const isPasswordValid = await bcrypt.compare(password, storedHashedPassword);
 
@@ -90,7 +103,7 @@ router.post('/signin', async (req: Request, res: Response) => {
             });
         }
 
-        const id = findUser.rows[0].id;
+        const id = findUser.id;
         const token = jwt.sign({ id }, process.env.JWT_TOKEN as string, { expiresIn: '24h' });
 
         res.status(200).json({
@@ -107,9 +120,9 @@ router.post('/signin', async (req: Request, res: Response) => {
 // @ts-ignore
 router.post('/add-card', isValidMiddleware, async (req: Request, res: Response) => {
     try {
-        const { name, username, share } = req.body;
+        const { github, linkedin, leetcode, twitter, email, phone } = req.body;
 
-        if (!name || !username) {
+        if (!github || !linkedin || !leetcode || !twitter || !email || !phone) {
             res.status(400).json({
                 message: "Please provide all fields!"
             });
@@ -119,20 +132,24 @@ router.post('/add-card', isValidMiddleware, async (req: Request, res: Response) 
         // @ts-ignore
         const userid = req.userid.id;
 
-        if (share === true) {
-            const uniqueid = uuid4();
-            const createShareCardQuery = `INSERT INTO socialtable (name, username, share, userid, uniqueid) VALUES ($1, $2, $3, $4, $5)`;
-            await pgClient.query(createShareCardQuery, [name, username, share, userid, uniqueid]);
+        const uniqueid = uuid4();
+        const createShareCard = await prisma.userLink.create({
+            data: {
+                userid,
+                github,
+                linkedin,
+                leetcode,
+                twitter,
+                email,
+                phone,
+                UUID: uniqueid
+            }
+        })
+
+        if(createShareCard){
             res.status(201).json({
                 message: "Card added successfully!",
-                message1: "Share link created successfully!",
                 uniqueid: uniqueid
-            });
-        } else {
-            const createShareCardQuery = `INSERT INTO socialtable (name, username, share, userid) VALUES ($1, $2, $3, $4)`;
-            await pgClient.query(createShareCardQuery, [name, username, share, userid]);
-            res.status(201).json({
-                message: "Card added successfully!"
             });
         }
     } catch (error) {
@@ -142,105 +159,104 @@ router.post('/add-card', isValidMiddleware, async (req: Request, res: Response) 
     }
 });
 
-// @ts-ignore
-router.get('/cards', isValidMiddleware, async (req: Request, res: Response) => {
-    try {
-        // @ts-ignore
-        const userid = req.userid.id;
+// // @ts-ignore
+// router.get('/cards', isValidMiddleware, async (req: Request, res: Response) => {
+//     try {
+//         // @ts-ignore
+//         const userid = req.userid.id;
 
-        if(!userid) {
-            res.status(400).json({
-                message: "Please log in!"
-            });
-            return;
-        }
+//         if(!userid) {
+//             res.status(400).json({
+//                 message: "Please log in!"
+//             });
+//             return;
+//         }
 
-        const getUserInfo = `SELECT * FROM socialtable WHERE userid = $1`
-        const usersCard = await pgClient.query(getUserInfo, [userid]);
+//         const getUserInfo = `SELECT * FROM socialtable WHERE userid = $1`
+//         const usersCard = await pgClient.query(getUserInfo, [userid]);
 
-        // do api call here https://api.github.com/users/Tejas-pr
-        res.status(201).json({
-            message: "successfully get the data",
-            usersCard: usersCard.rows
-        });
-    }catch(error) {
-        res.status(500).json({
-            message: "Error while fetching the cards, please try again."
-        });
-    }
-});
+//         // do api call here https://api.github.com/users/Tejas-pr
+//         res.status(201).json({
+//             message: "successfully get the data",
+//             usersCard: usersCard.rows
+//         });
+//     }catch(error) {
+//         res.status(500).json({
+//             message: "Error while fetching the cards, please try again."
+//         });
+//     }
+// });
 
-// @ts-ignore
-router.delete('/cards', isValidMiddleware, async (req: Request, res: Response) => {
-    try {
-        const { name } = req.body;
+// // @ts-ignore
+// router.delete('/cards', isValidMiddleware, async (req: Request, res: Response) => {
+//     try {
+//         const { name } = req.body;
 
-        if(!name) {
-            res.status(400).json({
-                message: "Please provide all fields!"
-            });
-            return;
-        }
-        // @ts-ignore
-        const userid = req.userid.id;
+//         if(!name) {
+//             res.status(400).json({
+//                 message: "Please provide all fields!"
+//             });
+//             return;
+//         }
+//         // @ts-ignore
+//         const userid = req.userid.id;
 
-        const deleteUserCardQuery = `DELETE FROM socialtable WHERE name = $1 AND userid = $2`;
-        await pgClient.query(deleteUserCardQuery, [name, userid]);
+//         const deleteUserCardQuery = `DELETE FROM socialtable WHERE name = $1 AND userid = $2`;
+//         await pgClient.query(deleteUserCardQuery, [name, userid]);
 
-        res.status(200).json({
-            message: "Successfully deleted the card!"
-        });
-    } catch(error) {
-        res.status(500).json({
-            message: "Error while deleting the card, please try again."
-        });
-    }
-});
+//         res.status(200).json({
+//             message: "Successfully deleted the card!"
+//         });
+//     } catch(error) {
+//         res.status(500).json({
+//             message: "Error while deleting the card, please try again."
+//         });
+//     }
+// });
 
-router.get('/socialcard/share/:id', async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
+// router.get('/socialcard/share/:id', async (req: Request, res: Response) => {
+//     try {
+//         const { id } = req.params;
 
-        const responseQuery = `SELECT * FROM socialtable WHERE uniqueid = $1`;
-        const response = await pgClient.query(responseQuery, [id]);
+//         const responseQuery = `SELECT * FROM socialtable WHERE uniqueid = $1`;
+//         const response = await pgClient.query(responseQuery, [id]);
 
-        if (response.rows.length > 0) {
-            const row = response.rows[0];
-            if (row.share === true) {
-                res.status(200).json({
-                    response: {
-                        name: row.name,
-                        username: row.username,
-                    },
-                });
-                return;
-            }
-        }
+//         if (response.rows.length > 0) {
+//             const row = response.rows[0];
+//             if (row.share === true) {
+//                 res.status(200).json({
+//                     response: {
+//                         name: row.name,
+//                         username: row.username,
+//                     },
+//                 });
+//                 return;
+//             }
+//         }
 
-        res.status(404).json({ message: "No shared card found or sharing is disabled." });
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).json({ message: "Error fetching data." });
-    }
-});
+//         res.status(404).json({ message: "No shared card found or sharing is disabled." });
+//     } catch (error) {
+//         console.error("Error fetching data:", error);
+//         res.status(500).json({ message: "Error fetching data." });
+//     }
+// });
 
-router.get('/no-users', async (req: Request, res: Response) => {
-    try {
-        const noUserQuery = `SELECT COUNT(*) FROM users`;
-        const result = await pgClient.query(noUserQuery);
+// router.get('/no-users', async (req: Request, res: Response) => {
+//     try {
+//         const noUserQuery = `SELECT COUNT(*) FROM users`;
+//         const result = await pgClient.query(noUserQuery);
 
-        const userCount = result.rows[0].count;
+//         const userCount = result.rows[0].count;
 
-        res.status(200).json({
-            totalUsers: userCount
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            message: "Error while fetching the user count."
-        });
-    }
-});
-
+//         res.status(200).json({
+//             totalUsers: userCount
+//         });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({
+//             message: "Error while fetching the user count."
+//         });
+//     }
+// });
 
 export default router;
