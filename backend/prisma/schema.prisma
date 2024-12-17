@@ -20,19 +20,21 @@ model CreateUser {
   email     String   @unique
   createdAt DateTime @default(now())
 
-  userLink  userLink?
+  userLink userLink[]
 }
 
 model userLink {
-  id        Int       @id @default(autoincrement())
-  userid    Int       @unique
-  github    String
-  linkedin  String
-  leetcode  String
-  twitter   String
-  email     String
-  phone     Int
-  UUID      String       @unique
+  id       Int     @id @default(autoincrement())
+  userid   Int     
+  UUID     String  @unique
+  cardName String
+  
+  github   String?
+  linkedin String?
+  leetcode String?
+  twitter  String?
+  email    String?
+  phone    BigInt?
 
-  user      CreateUser @relation(fields: [userid], references: [id])
+  user CreateUser @relation(fields: [userid], references: [id])
 }

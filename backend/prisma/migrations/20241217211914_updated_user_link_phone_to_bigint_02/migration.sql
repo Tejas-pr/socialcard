@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "userLink" ALTER COLUMN "phone" SET DATA TYPE BIGINT;

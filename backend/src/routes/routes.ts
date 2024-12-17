@@ -120,11 +120,59 @@ router.post('/signin', async (req: Request, res: Response) => {
 // @ts-ignore
 router.post('/add-card', isValidMiddleware, async (req: Request, res: Response) => {
     try {
-        const { github, linkedin, leetcode, twitter, email, phone } = req.body;
+        const { cardName, github, linkedin, leetcode, twitter, email, phone } = req.body;
 
-        if (!github || !linkedin || !leetcode || !twitter || !email || !phone) {
+        if (!cardName) {
             res.status(400).json({
-                message: "Please provide all fields!"
+                message: "Please provide card name"
+            });
+            return;
+        }
+
+        // @ts-ignore
+        const userid = req.userid.id;
+        const uniqueid = uuid4();
+
+        const createUser: any = {
+            github: github || null,
+            linkedin: linkedin || null,
+            leetcode: leetcode || null,
+            twitter: twitter || null,
+            email: email || null,
+            phone: phone || null,
+        }; 
+
+        const createShareCard = await prisma.userLink.create({
+            data: {
+                ...createUser,
+                userid,
+                cardName,
+                UUID: uniqueid
+            }
+        });
+
+        if (createShareCard) {
+            res.status(201).json({
+                message: "Card added successfully!",
+                uniqueid: uniqueid
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error while adding, please try again."
+        });
+    }
+});
+
+// @ts-ignore
+router.post('/update-card', isValidMiddleware, async (req: Request, res: Response) => {
+    try {
+        const { id, cardName, github, linkedin, leetcode, twitter, email, phone } = req.body;
+
+        if (!id) {
+            res.status(400).json({
+                message: "Please provide card ID"
             });
             return;
         }
@@ -132,131 +180,148 @@ router.post('/add-card', isValidMiddleware, async (req: Request, res: Response) 
         // @ts-ignore
         const userid = req.userid.id;
 
-        const uniqueid = uuid4();
-        const createShareCard = await prisma.userLink.create({
-            data: {
-                userid,
-                github,
-                linkedin,
-                leetcode,
-                twitter,
-                email,
-                phone,
-                UUID: uniqueid
-            }
-        })
+        const updateData: any = {};
 
-        if(createShareCard){
-            res.status(201).json({
-                message: "Card added successfully!",
-                uniqueid: uniqueid
+        if (cardName) updateData.cardName = cardName;
+        if (github) updateData.github = github;
+        if (linkedin) updateData.linkedin = linkedin;
+        if (leetcode) updateData.leetcode = leetcode;
+        if (twitter) updateData.twitter = twitter;
+        if (email) updateData.email = email;
+        if (phone) updateData.phone = phone;
+
+        const updatedCard = await prisma.userLink.update({
+            data: updateData,
+            where: {
+                id,
+                userid
+            }
+        });
+
+        if (updatedCard) {
+            res.status(200).json({
+                message: "Card updated successfully!",
+            });
+        } else {
+            res.status(400).json({
+                message: "Card not found or could not be updated.",
             });
         }
     } catch (error) {
+        console.log(error);
         res.status(500).json({
-            message: "Error while adding, please try again."
+            message: "Error while updating, please try again.",
         });
     }
 });
 
-// // @ts-ignore
-// router.get('/cards', isValidMiddleware, async (req: Request, res: Response) => {
-//     try {
-//         // @ts-ignore
-//         const userid = req.userid.id;
+// @ts-ignore
+router.get('/cards', isValidMiddleware, async (req: Request, res: Response) => {
+    try {
+        // @ts-ignore
+        const userid = req.userid.id;
 
-//         if(!userid) {
-//             res.status(400).json({
-//                 message: "Please log in!"
-//             });
-//             return;
-//         }
+        if(!userid) {
+            res.status(400).json({
+                message: "Please log in!"
+            });
+            return;
+        }
 
-//         const getUserInfo = `SELECT * FROM socialtable WHERE userid = $1`
-//         const usersCard = await pgClient.query(getUserInfo, [userid]);
+        const usersCard = await prisma.userLink.findMany({
+            where: {
+                userid
+            }
+        });
 
-//         // do api call here https://api.github.com/users/Tejas-pr
-//         res.status(201).json({
-//             message: "successfully get the data",
-//             usersCard: usersCard.rows
-//         });
-//     }catch(error) {
-//         res.status(500).json({
-//             message: "Error while fetching the cards, please try again."
-//         });
-//     }
-// });
+        res.status(201).json({
+            message: "successfully get the data",
+            usersCard: usersCard
+        });
 
-// // @ts-ignore
-// router.delete('/cards', isValidMiddleware, async (req: Request, res: Response) => {
-//     try {
-//         const { name } = req.body;
+    }catch(error) {
+        res.status(500).json({
+            message: "Error while fetching the cards, please try again."
+        });
+    }
+});
 
-//         if(!name) {
-//             res.status(400).json({
-//                 message: "Please provide all fields!"
-//             });
-//             return;
-//         }
-//         // @ts-ignore
-//         const userid = req.userid.id;
+// @ts-ignore
+router.delete('/cards', isValidMiddleware, async (req: Request, res: Response) => {
+    try {
+        const { id } = req.body;
 
-//         const deleteUserCardQuery = `DELETE FROM socialtable WHERE name = $1 AND userid = $2`;
-//         await pgClient.query(deleteUserCardQuery, [name, userid]);
+        if(!id) {
+            res.status(400).json({
+                message: "Please provide all fields!"
+            });
+            return;
+        }
+        // @ts-ignore
+        const userid = req.userid.id;
 
-//         res.status(200).json({
-//             message: "Successfully deleted the card!"
-//         });
-//     } catch(error) {
-//         res.status(500).json({
-//             message: "Error while deleting the card, please try again."
-//         });
-//     }
-// });
+        const deleteCard = await prisma.userLink.delete({
+            where: {
+                id,
+                userid
+            }
+        })
 
-// router.get('/socialcard/share/:id', async (req: Request, res: Response) => {
-//     try {
-//         const { id } = req.params;
+        if(deleteCard){
+            res.status(200).json({
+                message: "Successfully deleted the card!"
+            });
+        }
 
-//         const responseQuery = `SELECT * FROM socialtable WHERE uniqueid = $1`;
-//         const response = await pgClient.query(responseQuery, [id]);
+    } catch(error) {
+        res.status(500).json({
+            message: "Error while deleting the card, please try again."
+        });
+    }
+});
 
-//         if (response.rows.length > 0) {
-//             const row = response.rows[0];
-//             if (row.share === true) {
-//                 res.status(200).json({
-//                     response: {
-//                         name: row.name,
-//                         username: row.username,
-//                     },
-//                 });
-//                 return;
-//             }
-//         }
+router.get('/share/showcard/:uuid', async (req: Request, res: Response) => {
+    try {
+        const { uuid } = req.params;
 
-//         res.status(404).json({ message: "No shared card found or sharing is disabled." });
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//         res.status(500).json({ message: "Error fetching data." });
-//     }
-// });
+        const share = await prisma.userLink.findFirst({
+            where: {
+                UUID: uuid
+            }
+        });
 
-// router.get('/no-users', async (req: Request, res: Response) => {
-//     try {
-//         const noUserQuery = `SELECT COUNT(*) FROM users`;
-//         const result = await pgClient.query(noUserQuery);
+        if(share) {
+            res.status(200).json({
+                share
+            });
+        }else {
+            res.status(200).json({
+                message: "Invalid URL!"
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Error while fetching th data"
+        });
+    }
+});
 
-//         const userCount = result.rows[0].count;
+router.get('/total-users', async (req: Request, res: Response) => {
+    try{
+        const userCount = await prisma.createUser.count();
 
-//         res.status(200).json({
-//             totalUsers: userCount
-//         });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({
-//             message: "Error while fetching the user count."
-//         });
-//     }
-// });
+        if(userCount) {
+            res.status(200).json({
+                userCount
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Error while fetching the user count."
+        });
+    }
+});
 
 export default router;

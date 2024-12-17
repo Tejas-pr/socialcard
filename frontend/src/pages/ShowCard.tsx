@@ -9,3 +9,4 @@ const ShowCard = () => {
 };
 
 export default ShowCard;
+// do api call here https://api.github.com/users/Tejas-pr
