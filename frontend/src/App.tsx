@@ -5,10 +5,12 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ShowCard from "./pages/ShowCard";
 import Upgrade from "./pages/Upgrade";
+import { Toaster } from "./components/ui/toaster";
 
 const App = () => {
   return (
     <div>
+      <Toaster />
       <div>
         <Routes>
           <Route path="/" element={<LandingPage />} />
