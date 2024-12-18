@@ -60,7 +60,7 @@ router.post('/signup', async (req: Request, res: Response) => {
             }
         })
 
-        res.status(201).json({
+        res.status(200).json({
             message: "User registered successfully."
         });
     } catch (error) {

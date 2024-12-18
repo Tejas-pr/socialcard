@@ -1,7 +1,49 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/Spinner";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
+import axios from "axios";
 import { motion } from "motion/react";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 const Signin = () => {
+  const [loading, setLoading] = useState(false);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const handleSignin = async () => {
+    setLoading(true);
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/signin`, {
+        email: email,
+        password: password,
+      });
+
+      const responseData = response.data;
+      const token = responseData.token;
+
+      if(token) {
+        localStorage.setItem("token", token);
+        toast({
+          description: "Signin successfully",
+        });
+        setLoading(false);
+        navigate("/dashboard");
+      }
+      setLoading(false);
+    } catch (e) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      })
+    }
+  };
   return (
     <div className="bg-gradient-to-r from-[#FDF4E8] via-[#FBE8FB] to-[#FED2D8] h-screen">
       <motion.div
@@ -28,7 +70,7 @@ const Signin = () => {
                 >
                   Your email
                 </label>
-                <Input placeholder="Your email" />
+                <Input ref={emailRef} placeholder="Your email" />
               </div>
 
               <div>
@@ -38,7 +80,7 @@ const Signin = () => {
                 >
                   Password
                 </label>
-                <Input placeholder="••••••••" />
+                <Input ref={passwordRef} placeholder="••••••••" />
               </div>
 
               <div className="flex items-center justify-between space-x-5">
@@ -66,7 +108,9 @@ const Signin = () => {
                   Forgot password?
                 </a>
               </div>
-              <Button className="w-full">Sign In</Button>
+              <Button className="w-full" onClick={handleSignin}>
+                {loading ? <Spinner size="medium" className="text-white" /> : "Sign In"}
+              </Button>
               <p className="text-sm sm:text-base font-light ml-5 text-gray-500 dark:text-gray-400">
                 Don’t have an account yet?{" "}
                 <a

@@ -1,41 +1,40 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/Spinner";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { motion } from "motion/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Signup = () => {
+  const [loading, setLoading] = useState(false);
   const usernameRef = useRef<HTMLInputElement>(null);
-  const emialRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
   const handleSignup = async () => {
+    setLoading(true);
     const username = usernameRef.current?.value;
-    const email = emialRef.current?.value;
+    const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
-    console.log(import.meta.env.VITE_BACKEND_URL);
-    console.log(username, email, password);
     try {
-      console.log("im here");
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/signup`, {
         username: username,
         password: password,
         email: email,
       });
 
-      console.log(response)
-
-      if (response.status === 201) {
+      if (response.status === 200) {
         toast({
           description: "Signed up successfully",
         });
+        setLoading(false);
         navigate("/signin");
       }
+      setLoading(false);
     } catch (e) {
-      console.log(e);
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
@@ -81,7 +80,7 @@ const Signup = () => {
                   >
                     Your email
                   </label>
-                  <Input ref={emialRef} placeholder="Your email" />
+                  <Input ref={emailRef} placeholder="Your email" />
                 </div>
 
                 <div>
@@ -94,7 +93,7 @@ const Signup = () => {
                   <Input ref={passwordRef} placeholder="••••••••" />
                 </div>
                 <Button className="w-full" onClick={handleSignup}>
-                  Sign up
+                  {loading ? <Spinner size="medium" className="text-white" /> : "Sign Up"}
                 </Button>
                 <p className="text-sm sm:text-base font-light ml-5 text-gray-500 dark:text-gray-400">
                   Already have an account{" "}

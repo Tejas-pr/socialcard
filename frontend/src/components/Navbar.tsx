@@ -1,5 +1,5 @@
 import { Link2Icon, PanelRightOpen, Settings2, ShieldPlus } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 
 const Navbar = ({
@@ -10,12 +10,13 @@ const Navbar = ({
   toggleNav: () => void;
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const clearToken = () => {
     if (!localStorage.getItem("token")) {
       return;
     }
     localStorage.removeItem("token");
-    window.location.reload();
+    navigate("/");
   };
   return (
     <div
