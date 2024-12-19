@@ -9,12 +9,12 @@ import {
 import { Button } from "./ui/button";
 import { Edit } from "lucide-react";
 
-const EditLink = () => {
+const EditLink = ({ id }: { id: number }) => {
   return (
     <div>
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant={"ghost"}>
+          <Button variant={"ghost"} onClick={() => {console.log("id", id)}}>
             <Edit />
           </Button>
         </DialogTrigger>

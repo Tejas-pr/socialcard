@@ -24,17 +24,18 @@ model CreateUser {
 }
 
 model userLink {
-  id       Int     @id @default(autoincrement())
-  userid   Int     
-  UUID     String  @unique
+  id       Int    @id @default(autoincrement())
+  userid   Int
+  UUID     String @unique
   cardName String
-  
-  github   String?
-  linkedin String?
-  leetcode String?
-  twitter  String?
-  email    String?
-  phone    BigInt?
+
+  github    String?
+  linkedin  String?
+  leetcode  String?
+  twitter   String?
+  email     String?
+  phone     BigInt?
+  createdAt DateTime @default(now())
 
   user CreateUser @relation(fields: [userid], references: [id])
 }

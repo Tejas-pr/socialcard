@@ -64,6 +64,7 @@ const DrawerCreateLink = () => {
       });
       setLoading(false);
       setIsOpen(false);
+      setTimeout(() => window.location.reload(), 700);
     } catch (error) {
       setLoading(false);
       toast({
