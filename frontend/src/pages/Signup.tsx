@@ -28,7 +28,7 @@ const Signup = () => {
 
       if (response.status === 200) {
         toast({
-          description: "Signed up successfully",
+          description: "Signed up successfully!",
         });
         setLoading(false);
         navigate("/signin");

@@ -11,16 +11,78 @@ import {
 import { Button } from "./ui/button";
 import { ArrowDown, CornerDownLeft, Link } from "lucide-react";
 import { Input } from "./ui/input";
+import { useRef, useState } from "react";
+import axios from "axios";
+import { Spinner } from "./ui/Spinner";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
 
 const DrawerCreateLink = () => {
-  const handleCreateLink = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const cardNameRef = useRef<HTMLInputElement>(null);
+  const githubRef = useRef<HTMLInputElement>(null);
+  const linkedinRef = useRef<HTMLInputElement>(null);
+  const leetcodeRef = useRef<HTMLInputElement>(null);
+  const twitterRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
+  const handleCreateLink = async () => {
+    setLoading(true);
+    const cardName = cardNameRef.current?.value;
+    const github = githubRef.current?.value;
+    const linkedin = linkedinRef.current?.value;
+    const leetcode = leetcodeRef.current?.value;
+    const twitter = twitterRef.current?.value;
+    const email = emailRef.current?.value;
+    const phone = phoneRef.current?.value;
+
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/v1/add-card`,
+        {
+          cardName,
+          github,
+          linkedin,
+          leetcode,
+          twitter,
+          email,
+          phone,
+        },
+        {
+          headers: {
+            "Content-Type": "Application/json",
+            authorization: token,
+          },
+        }
+      );
+
+      console.log(response);
+      if(response.data.status === 201) {
+        toast({
+          description: "Card added successfully!",
+        });
+      }
+      setLoading(false);
+      setIsOpen(false);      
+    } catch (error) {
+      setLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      })
+    }
   };
   return (
     <div>
-      <Drawer>
+      <Drawer open={isOpen} onOpenChange={setIsOpen}>
         <DrawerTrigger asChild>
-          <Button>Create Link</Button>
+          <Button onClick={() => setIsOpen(true)} >Create Link</Button>
         </DrawerTrigger>
         <DrawerContent className="h-[90%] md:h-[80%]">
           <DrawerHeader>
@@ -45,6 +107,7 @@ const DrawerCreateLink = () => {
                 </span>
               </div>
               <Input
+                ref={cardNameRef}
                 placeholder="Resume Card"
                 className="mt-1 text-sm sm:text-base"
               />
@@ -60,6 +123,7 @@ const DrawerCreateLink = () => {
                     </span>
                   </div>
                   <Input
+                    ref={githubRef}
                     placeholder="user123"
                     className="mt-1 text-sm sm:text-base"
                   />
@@ -72,6 +136,7 @@ const DrawerCreateLink = () => {
                     </span>
                   </div>
                   <Input
+                    ref={linkedinRef}
                     placeholder="user123"
                     className="mt-1 text-sm sm:text-base"
                   />
@@ -84,6 +149,7 @@ const DrawerCreateLink = () => {
                     </span>
                   </div>
                   <Input
+                    ref={leetcodeRef}
                     placeholder="user123"
                     className="mt-1 text-sm sm:text-base"
                   />
@@ -96,6 +162,7 @@ const DrawerCreateLink = () => {
                     </span>
                   </div>
                   <Input
+                    ref={twitterRef}
                     placeholder="user123"
                     className="mt-1 text-sm sm:text-base"
                   />
@@ -108,6 +175,7 @@ const DrawerCreateLink = () => {
                     </span>
                   </div>
                   <Input
+                    ref={emailRef}
                     placeholder="John@example.com"
                     className="mt-1 text-sm sm:text-base"
                   />
@@ -120,6 +188,7 @@ const DrawerCreateLink = () => {
                     </span>
                   </div>
                   <Input
+                    ref={phoneRef}
                     placeholder="0000000000"
                     className="mt-1 text-sm sm:text-base"
                   />
@@ -132,8 +201,13 @@ const DrawerCreateLink = () => {
             <div>
               <div className="flex space-x-2 items-center justify-center">
                 <Button className="w-96" onClick={handleCreateLink}>
-                  Create Link
-                  <CornerDownLeft />
+                  {loading ? (
+                    <Spinner size="medium" className="text-white" />
+                  ) : (
+                    <>
+                      <CornerDownLeft /> Create Link
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
