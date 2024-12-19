@@ -234,12 +234,18 @@ router.get('/cards', isValidMiddleware, async (req: Request, res: Response) => {
             }
         });
 
-        res.status(201).json({
-            message: "successfully get the data",
-            usersCard: usersCard
-        });
+        // Serialize BigInt fields to strings
+        const serializedUsersCard = usersCard.map(card => ({
+            ...card,
+            phone: card.phone ? card.phone.toString() : null,
+        }))
 
+        res.status(200).json({
+            message: "successfully get the data",
+            usersCard: serializedUsersCard
+        });
     }catch(error) {
+        console.log(error);
         res.status(500).json({
             message: "Error while fetching the cards, please try again."
         });

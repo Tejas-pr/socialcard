@@ -41,7 +41,7 @@ const DrawerCreateLink = () => {
 
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/v1/add-card`,
         {
           cardName,
@@ -59,15 +59,11 @@ const DrawerCreateLink = () => {
           },
         }
       );
-
-      console.log(response);
-      if(response.data.status === 201) {
-        toast({
-          description: "Card added successfully!",
-        });
-      }
+      toast({
+        description: "Card added successfully!",
+      });
       setLoading(false);
-      setIsOpen(false);      
+      setIsOpen(false);
     } catch (error) {
       setLoading(false);
       toast({
