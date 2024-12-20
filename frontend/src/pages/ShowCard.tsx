@@ -1,4 +1,4 @@
-import TiltCard from "@/components/Tiltcard";
+import TiltCard from "@/components/TiltCard";
 
 const ShowCard = () => {
   return (
@@ -10,3 +10,4 @@ const ShowCard = () => {
 
 export default ShowCard;
 // do api call here https://api.github.com/users/Tejas-pr
+// http://localhost:3000/v1/share/showcard/f993db3d-6816-4aee-8bfb-0fb6dc97a5ec

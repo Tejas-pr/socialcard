@@ -16,9 +16,17 @@ const Signup = () => {
   const { toast } = useToast();
   const handleSignup = async () => {
     setLoading(true);
-    const username = usernameRef.current?.value;
-    const email = emailRef.current?.value;
-    const password = passwordRef.current?.value;
+    const username = usernameRef.current?.value?.trim();
+    const email = emailRef.current?.value?.trim();
+    const password = passwordRef.current?.value?.trim();
+    if (!username || !email || !password) {
+      toast({
+        variant: "destructive",
+        title: "Missing fields",
+        description: "Please fill in all the fields before signing up.",
+      });
+      return;
+    }
     try {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/v1/signup`, {
         username: username,
@@ -35,10 +43,13 @@ const Signup = () => {
       }
       setLoading(false);
     } catch (e) {
+      console.log(e);
+      setLoading(false);
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
+        // @ts-ignore
+        description: e?.response?.data?.message || "There was a problem with your request.",
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
     }

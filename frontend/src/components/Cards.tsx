@@ -20,15 +20,26 @@ import axios from "axios";
 import { Badge } from "./ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
+import { useNavigate } from "react-router-dom";
 
 const Cards = () => {
   const [copy, setCopy] = useState(false);
   const [data, setData] = useState([]);
   const { toast } = useToast();
+  const navigate = useNavigate();
   if (copy === true) {
     setTimeout(() => setCopy(false), 2000);
   }
   const token = localStorage.getItem("token");
+
+  if(!token) {
+    navigate("/");
+    toast({
+      variant: "default",
+      title: "Uh oh! Please Signin / Signup.",
+    });
+    return;
+  }
 
   const handleCard = async () => {
     try {
@@ -41,7 +52,6 @@ const Cards = () => {
           },
         }
       );
-
       setData(response.data.usersCard);
     } catch (error) {
       console.log(error);

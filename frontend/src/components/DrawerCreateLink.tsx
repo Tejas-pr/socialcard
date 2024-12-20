@@ -69,8 +69,8 @@ const DrawerCreateLink = () => {
       setLoading(false);
       toast({
         variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
+        title: "Limit Exceeded",
+        description: "You have reached the limit of creating cards",
         action: <ToastAction altText="Try again">Try again</ToastAction>,
       })
     }

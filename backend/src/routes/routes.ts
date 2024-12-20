@@ -131,6 +131,19 @@ router.post('/add-card', isValidMiddleware, async (req: Request, res: Response) 
 
         // @ts-ignore
         const userid = req.userid.id;
+        const countTotalCards = await prisma.userLink.count({
+            where: {
+                userid
+            }
+        })
+
+        if(countTotalCards >= 5) {
+            res.status(400).json({
+                message: "You have reached the maximum number of cards!"
+            });
+            return;
+        };
+        
         const uniqueid = uuid4();
 
         const createUser: any = {
@@ -140,7 +153,7 @@ router.post('/add-card', isValidMiddleware, async (req: Request, res: Response) 
             twitter: twitter || null,
             email: email || null,
             phone: phone || null,
-        }; 
+        };
 
         const createShareCard = await prisma.userLink.create({
             data: {
@@ -188,7 +201,7 @@ router.post('/update-card', isValidMiddleware, async (req: Request, res: Respons
         if (leetcode) updateData.leetcode = leetcode;
         if (twitter) updateData.twitter = twitter;
         if (email) updateData.email = email;
-        if (phone) updateData.phone = phone;
+        if (phone) updateData.phone = phone.toString();
 
         const updatedCard = await prisma.userLink.update({
             data: updateData,

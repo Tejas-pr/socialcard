@@ -24,13 +24,22 @@ const NavNavigation = () => {
               }}
               className="flex flex-col md:flex-row justify-center items-center md:gap-2"
             >
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
                 <Link to="/">Home</Link>
               </NavigationMenuLink>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
                 <Link to="/upgrade">Pricing</Link>
               </NavigationMenuLink>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
                 <Link to="https://github.com/Tejas-pr/socialcard">
                   Documentation
                 </Link>
