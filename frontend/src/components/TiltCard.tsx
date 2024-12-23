@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   motion,
   useMotionTemplate,
@@ -7,11 +7,26 @@ import {
 } from "framer-motion";
 import img from "../assets/img.jpg";
 import BubbleText from "./showcardTitle";
+import axios from "axios";
 const ROTATION_RANGE = 32.5;
 const HALF_ROTATION_RANGE = 32.5 / 2;
 
 const TiltCard = () => {
   const ref = useRef<HTMLDivElement | null>(null);
+
+  const handleGetCard = async () => {
+    try{
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/v1/share/showcard/3991fbaa-10fb-4559-b132-6551a917c7a6`);
+      // const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/share/showcard/:uuid`);
+      console.log(response.data.share);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    handleGetCard();
+  } , []);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);

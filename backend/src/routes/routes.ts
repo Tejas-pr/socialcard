@@ -201,7 +201,7 @@ router.post('/update-card', isValidMiddleware, async (req: Request, res: Respons
         if (leetcode) updateData.leetcode = leetcode;
         if (twitter) updateData.twitter = twitter;
         if (email) updateData.email = email;
-        if (phone) updateData.phone = phone.toString();
+        if (phone) updateData.phone = phone ? phone.toString() : null;
 
         const updatedCard = await prisma.userLink.update({
             data: updateData,
@@ -309,11 +309,16 @@ router.get('/share/showcard/:uuid', async (req: Request, res: Response) => {
             }
         });
 
-        if(share) {
+        if (share) {
+            const formattedShare = {
+                ...share,
+                phone: share.phone ? share.phone.toString() : null,
+            };
+
             res.status(200).json({
-                share
+                share: formattedShare
             });
-        }else {
+        } else {
             res.status(200).json({
                 message: "Invalid URL!"
             });
@@ -321,7 +326,7 @@ router.get('/share/showcard/:uuid', async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({
-            message: "Error while fetching th data"
+            message: "Error while fetching the data"
         });
     }
 });
